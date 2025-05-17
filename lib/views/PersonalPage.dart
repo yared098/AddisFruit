@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart' as ph;
+import 'dart:io' show Platform; // for checking platform
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:html' as html; // for geolocation on web
+
 
 class PersonalPage extends StatefulWidget {
   const PersonalPage({super.key});
@@ -71,72 +75,90 @@ class _PersonalPageState extends State<PersonalPage> {
   }
 
   Future<void> _updateLocation() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Why Location Permission?'),
-        content: const Text(
-          'We need your location to calculate how far you are from the marketplace in kilometers. '
-          'This helps us provide better service and delivery estimates.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Allow'),
-          ),
-        ],
+  final confirmed = await showDialog<bool>(
+    context: context,
+    builder: (_) => AlertDialog(
+      title: const Text('Why Location Permission?'),
+      content: const Text(
+        'We need your location to calculate how far you are from the marketplace in kilometers.',
       ),
-    );
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Allow'),
+        ),
+      ],
+    ),
+  );
 
-    if (confirmed != true) return;
+  if (confirmed != true) return;
 
-    setState(() {
-      _loadingLocation = true;
-    });
+  setState(() {
+    _loadingLocation = true;
+  });
 
-    // Request location permission using location package
-    loc.PermissionStatus permissionStatus = await _location.hasPermission();
-    if (permissionStatus == loc.PermissionStatus.denied) {
-      permissionStatus = await _location.requestPermission();
-      if (permissionStatus != loc.PermissionStatus.granted) {
+  try {
+    if (kIsWeb) {
+      // ✅ Web location access
+      html.window.navigator.geolocation
+          ?.getCurrentPosition()
+          .then((position) async {
         setState(() {
+          _latitude = position.coords?.latitude as double?;
+          _longitude = position.coords?.longitude as double?;
           _loadingLocation = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permission denied.')),
-        );
-        return;
-      }
-    }
 
-    // Check if location service is enabled
-    bool serviceEnabled = await _location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await _location.requestService();
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setDouble('latitude', _latitude!);
+        await prefs.setDouble('longitude', _longitude!);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location updated successfully!')),
+        );
+      }).catchError((error) {
+        setState(() => _loadingLocation = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to get location: $error')),
+        );
+      });
+    } else {
+      // ✅ Mobile (Android/iOS)
+      loc.PermissionStatus permissionStatus = await _location.hasPermission();
+      if (permissionStatus == loc.PermissionStatus.denied) {
+        permissionStatus = await _location.requestPermission();
+        if (permissionStatus != loc.PermissionStatus.granted) {
+          setState(() => _loadingLocation = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permission denied.')),
+          );
+          return;
+        }
+      }
+
+      bool serviceEnabled = await _location.serviceEnabled();
       if (!serviceEnabled) {
-        setState(() {
-          _loadingLocation = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location service is disabled.')),
-        );
-        return;
+        serviceEnabled = await _location.requestService();
+        if (!serviceEnabled) {
+          setState(() => _loadingLocation = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location service is disabled.')),
+          );
+          return;
+        }
       }
-    }
 
-    try {
-      final loc.LocationData locData = await _location.getLocation();
+      final locData = await _location.getLocation();
       setState(() {
         _latitude = locData.latitude;
         _longitude = locData.longitude;
         _loadingLocation = false;
       });
 
-      // Save updated location
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setDouble('latitude', _latitude!);
       await prefs.setDouble('longitude', _longitude!);
@@ -144,15 +166,14 @@ class _PersonalPageState extends State<PersonalPage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Location updated successfully!')),
       );
-    } catch (e) {
-      setState(() {
-        _loadingLocation = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to get location: $e')),
-      );
     }
+  } catch (e) {
+    setState(() => _loadingLocation = false);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Error getting location: $e')),
+    );
   }
+}
 
   void _showLocationPermissionDialog() {
     showDialog(
@@ -214,22 +235,35 @@ class _PersonalPageState extends State<PersonalPage> {
   );
 }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Personal Info',style: TextStyle(color: Colors.white),),
-        backgroundColor: Colors.green,
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    backgroundColor: const Color(0xFFF9F9F9),
+    appBar: AppBar(
+      iconTheme: const IconThemeData(color: Colors.white),
+      title: const Text('Personal Info', style: TextStyle(color: Colors.white)),
+      backgroundColor: Colors.green.shade700,
+      elevation: 2,
+    ),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: _isRegistered ? _buildRegisteredView() : _buildRegistrationForm(),
+              ),
+            ),
+          ],
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: _isRegistered ? _buildRegisteredView() : _buildRegistrationForm(),
-      ),
-    );
-  }
-
+    ),
+  );
+}
   Widget _buildRegisteredView() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -318,12 +352,13 @@ class _PersonalPageState extends State<PersonalPage> {
             },
           ),
           const SizedBox(height: 24),
+          
           _loadingLocation
               ? const Center(child: CircularProgressIndicator())
               : ElevatedButton.icon(
                   onPressed: () async {
                     await _updateLocation();
-                    _saveUserData();
+                   await _saveUserData();
                   },
                   icon: const Icon(Icons.save),
                   label: const Text('Save'),

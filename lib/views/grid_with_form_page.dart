@@ -11,6 +11,7 @@ import 'package:addisfruit/widgets/widgetAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../viewmodels/fruit_view_model.dart';
 import '../widgets/fruit_form_widget.dart';
 
@@ -41,7 +42,7 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
   ];
 
   int _currentIndex = 0;
-    bool _isUserRegistered = false;  // Track user registration status
+  bool _isUserRegistered = false; // Track user registration status
 
   late PageController _pageController;
 
@@ -51,7 +52,7 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
   void initState() {
     super.initState();
 
-     _checkUserRegistration();
+    _checkUserRegistration();
     _pageController = PageController(initialPage: 0);
 
     filteredFruits = allFruits;
@@ -92,18 +93,11 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
     });
   }
 
-  // Simulated async check for user registration
   Future<void> _checkUserRegistration() async {
-    // Example: You might fetch from SharedPreferences, secure storage, or a provider
-    // For demonstration, let's simulate a delay and a bool value
+    final prefs = await SharedPreferences.getInstance();
 
-    await Future.delayed(Duration(milliseconds: 500));
-
-    bool userRegistered = false; // Replace with your actual check logic
-
-    // Example: If you have user data in Provider or SharedPrefs
-    // final user = Provider.of<UserProvider>(context, listen: false).user;
-    // bool userRegistered = user != null;
+    // Retrieve a boolean value from SharedPreferences
+    bool userRegistered = prefs.getBool('isRegistered') ?? false;
 
     setState(() {
       _isUserRegistered = userRegistered;
@@ -138,7 +132,7 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
       appBar: CustomAppBar(
         searchController: _searchController,
         searchFocusNode: _searchFocusNode,
-        isUserRegistered: _isUserRegistered,
+        isUserRegistered: true,
       ),
       body:
           isWideScreen

@@ -1,9 +1,11 @@
 import 'package:addisfruit/viewmodels/CartViewModel.dart';
+import 'package:addisfruit/viewmodels/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+
 class CartPage extends StatelessWidget {
-  void _showAnimatedDialog(BuildContext context, String title, String message) {
+  void _showAnimatedDialog(BuildContext context, String title, String message, Color color) {
     showGeneralDialog(
       barrierLabel: "Success",
       barrierDismissible: true,
@@ -16,7 +18,7 @@ class CartPage extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 30),
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).dialogBackgroundColor,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Material(
@@ -24,7 +26,7 @@ class CartPage extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.check_circle, size: 60, color: Colors.green),
+                  Icon(Icons.check_circle, size: 60, color: color),
                   const SizedBox(height: 16),
                   Text(
                     title,
@@ -43,7 +45,7 @@ class CartPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: color,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -74,16 +76,23 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final cart = Provider.of<CartViewModel>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
+    final primaryColor = isDark ? Colors.tealAccent.shade700 : Colors.green.shade700;
+    final accentColor = isDark ? Colors.tealAccent : Colors.green;
+    final iconColor = isDark ? Colors.white : Colors.white;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green.shade700,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("🛒 Your Cart", style: TextStyle(color: Colors.white)),
+        backgroundColor: primaryColor,
+        iconTheme: IconThemeData(color: iconColor),
+        title: Text("🛒 Your Cart", style: TextStyle(color: iconColor)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_forever, color: Colors.white),
+            icon: Icon(Icons.delete_forever, color: iconColor),
             tooltip: "Clear Cart",
             onPressed: () {
               Navigator.pop(context);
@@ -92,13 +101,14 @@ class CartPage extends StatelessWidget {
                 context,
                 "Cart Cleared",
                 "Your cart has been successfully cleared!",
+                accentColor,
               );
             },
           ),
         ],
       ),
       body: cart.items.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 "🛍️ Your cart is empty",
                 style: TextStyle(fontSize: 18, color: Colors.grey),
@@ -146,15 +156,15 @@ class CartPage extends StatelessWidget {
                       spacing: 4,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.remove_circle_outline, color: Colors.grey),
+                          icon: Icon(Icons.remove_circle_outline, color: Colors.grey),
                           onPressed: () => cart.decreaseQuantity(item.name),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.add_circle_outline, color: Colors.grey),
+                          icon: Icon(Icons.add_circle_outline, color: Colors.grey),
                           onPressed: () => cart.increaseQuantity(item.name),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
+                          icon: Icon(Icons.delete, color: Colors.red),
                           onPressed: () => cart.removeItem(item.name),
                         ),
                       ],
@@ -167,7 +177,7 @@ class CartPage extends StatelessWidget {
           ? Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.check_circle_outline),
+                icon: Icon(Icons.check_circle_outline),
                 label: const Text(
                   "Process Order",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -178,11 +188,12 @@ class CartPage extends StatelessWidget {
                     context,
                     "Order Placed",
                     "Your order has been successfully processed!",
+                    accentColor,
                   );
                   cart.clearCart();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: accentColor,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

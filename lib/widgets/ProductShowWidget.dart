@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:addisfruit/Model/fruit_model.dart';
 import 'package:addisfruit/viewmodels/CartViewModel.dart';
 import 'package:addisfruit/viewmodels/fruit_view_model.dart';
+import 'package:addisfruit/viewmodels/theme_provider.dart'; // Add this import
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,14 +20,18 @@ class ProductShowWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
+    final isDark = themeProvider.isDarkMode;
+
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: isWideScreen ? 8 : 3,
-        crossAxisSpacing: 4, // Reduced from 8
-mainAxisSpacing: 4,  // Reduced from 8
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
         childAspectRatio: 0.8,
       ),
       itemCount: filteredFruits.length,
@@ -45,17 +50,17 @@ mainAxisSpacing: 4,  // Reduced from 8
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDark ? Colors.grey[850] : Colors.white, // Background color adapts
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.shade300,
+                  color: isDark ? Colors.black54 : Colors.grey.shade300,
                   blurRadius: 6,
                   offset: const Offset(2, 2),
                 ),
               ],
               border: Border.all(
-                color: Colors.grey.shade200,
+                color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
                 width: 1,
               ),
             ),
@@ -83,15 +88,15 @@ mainAxisSpacing: 4,  // Reduced from 8
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
                       decoration: BoxDecoration(
-                        color: Colors.green.shade50,
+                        color: isDark ? Colors.green.shade900 : Colors.green.shade50, // Adapted container bg
                         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                       ),
                       child: Text(
                         fruit.name,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
-                          color: Colors.green,
+                          color: isDark ? Colors.green.shade300 : Colors.green, // Adapted text color
                         ),
                         textAlign: TextAlign.center,
                       ),

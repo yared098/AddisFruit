@@ -1,4 +1,5 @@
 import 'package:addisfruit/viewmodels/CartViewModel.dart';
+import 'package:addisfruit/viewmodels/theme_provider.dart';
 import 'package:addisfruit/views/CartPage.dart';
 import 'package:addisfruit/views/PersonalPage.dart';
 import 'package:addisfruit/views/order_history_page.dart';
@@ -9,7 +10,7 @@ import 'package:provider/provider.dart';
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final TextEditingController searchController;
   final FocusNode searchFocusNode;
-  final bool isUserRegistered; // New flag to indicate if user info exists
+  final bool isUserRegistered;
 
   const CustomAppBar({
     Key? key,
@@ -23,22 +24,30 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.isDarkMode;
+
     return Material(
       elevation: 2,
-      shadowColor: Colors.black12,
+      shadowColor: isDark ? Colors.black54 : Colors.black12,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.green.shade800, Colors.green.shade500],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          gradient: isDark
+              ? LinearGradient(
+                  colors: [Colors.grey[900]!, Colors.grey[800]!],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : LinearGradient(
+                  colors: [Colors.green.shade800, Colors.green.shade500],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         ),
         child: SafeArea(
           child: Row(
             children: [
-              // Search bar replaces title
               Expanded(
                 child: Container(
                   margin: const EdgeInsets.symmetric(vertical: 8),
@@ -48,17 +57,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     child: TextField(
                       controller: searchController,
                       focusNode: searchFocusNode,
-                      cursorColor: Colors.green.shade700,
-                      style: const TextStyle(fontSize: 14),
+                      cursorColor: isDark ? Colors.green.shade300 : Colors.green.shade700,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
                       decoration: InputDecoration(
                         hintText: 'Search fruits...',
-                        prefixIcon: const Icon(Icons.search, size: 20),
+                        hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
+                        prefixIcon: Icon(Icons.search, size: 20, color: isDark ? Colors.white54 : Colors.black54),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: Colors.white,
+                        fillColor: isDark ? Colors.grey[800] : Colors.white,
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 0,
                           horizontal: 16,
@@ -69,11 +82,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
 
-              // Show icons or profile circle based on user registration status
               if (isUserRegistered) ...[
                 IconButton(
                   tooltip: 'Order History',
-                  icon: const Icon(Icons.history, color: Colors.white70),
+                  icon: Icon(Icons.history, color: isDark ? Colors.white70 : Colors.white70),
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -89,9 +101,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       children: [
                         IconButton(
                           tooltip: 'Shopping Cart',
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.shopping_cart_outlined,
-                            color: Colors.white70,
+                            color: isDark ? Colors.white70 : Colors.white70,
                           ),
                           onPressed: () {
                             Navigator.push(
@@ -128,7 +140,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
                 const SizedBox(width: 4),
               ] else
-                // If user not registered, show circular person icon
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: InkWell(
@@ -141,14 +152,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     },
                     child: CircleAvatar(
                       radius: 20,
-                      backgroundColor: Colors.white,
+                      backgroundColor: isDark ? Colors.grey[700] : Colors.white,
                       child: Icon(
                         Icons.person,
-                        color: Colors.green.shade700,
+                        color: isDark ? Colors.green.shade300 : Colors.green.shade700,
                       ),
                     ),
                   ),
                 ),
+
+              // 🌙 Light/Dark Mode Toggle Icon
+              IconButton(
+                tooltip: isDark ? 'Light Mode' : 'Dark Mode',
+                icon: Icon(
+                  isDark ? Icons.wb_sunny_outlined : Icons.nightlight_round,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  themeProvider.toggleTheme();
+                },
+              ),
             ],
           ),
         ),
