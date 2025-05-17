@@ -111,19 +111,11 @@ void _showNotRegisteredBottomSheet(BuildContext context) {
     ),
     builder: (context) {
       return Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header Image
-            Image.asset(
-              'assets/images/register_banner.png', // Ensure this image exists
-              height: 150,
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 16),
-
-            // Title
+                  // Title
             const Text(
               'You are not registered to Addis Fruit',
               style: TextStyle(
@@ -133,15 +125,9 @@ void _showNotRegisteredBottomSheet(BuildContext context) {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
+            
 
-            // Description / Benefits
-            const Text(
-              'Register now and enjoy full features including:',
-              style: TextStyle(fontSize: 16),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 12),
+           
 
             // Benefits List
             Column(
@@ -155,10 +141,7 @@ void _showNotRegisteredBottomSheet(BuildContext context) {
                   leading: Icon(Icons.track_changes, color: Colors.green),
                   title: Text('Track your order in real-time'),
                 ),
-                ListTile(
-                  leading: Icon(Icons.favorite, color: Colors.green),
-                  title: Text('Save your favorite products'),
-                ),
+              
                 ListTile(
                   leading: Icon(Icons.notifications_active, color: Colors.green),
                   title: Text('Get updates on offers and delivery'),
@@ -166,7 +149,7 @@ void _showNotRegisteredBottomSheet(BuildContext context) {
               ],
             ),
 
-            const SizedBox(height: 16),
+            // const SizedBox(height: 16),
 
             // Register Button
             ElevatedButton.icon(
