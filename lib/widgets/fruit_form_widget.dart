@@ -11,31 +11,26 @@ class FruitFormWidget extends StatelessWidget {
     final viewModel = Provider.of<FruitViewModel>(context);
     final fruit = viewModel.selectedFruit;
 
-    // Set current text values (avoid setting every build, consider using stateful approach if needed)
+    // Set current values (consider managing with StatefulWidget for dynamic form)
     quantityController.text = viewModel.quantity;
     amountController.text = viewModel.amount;
 
     return SafeArea(
       child: SingleChildScrollView(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-          top: 24,
-          left: 20,
-          right: 20,
-        ),
+        padding: const EdgeInsets.all(12),
         child: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.red,
-            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.green.withOpacity(0.15),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
+                color: Colors.green.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
             ],
-            border: Border.all(color: Colors.green.shade200, width: 2),
+            border: Border.all(color: Colors.green.shade100, width: 1.5),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -44,112 +39,78 @@ class FruitFormWidget extends StatelessWidget {
               Text(
                 fruit != null ? fruit.name : "New Fruit",
                 style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                   color: Colors.green.shade800,
-                  letterSpacing: 1.1,
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 14),
 
-              // Fruit image with rounded corners & shadow
+              // Fruit image
               Center(
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: fruit?.image != null && fruit!.image.isNotEmpty
-                      ? Image.network(
-                          fruit.image,
-                          height: 180,
-                          width: double.infinity,
-                          fit: BoxFit.cover,
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            return Container(
-                              height: 180,
-                              width: double.infinity,
-                              color: Colors.grey.shade200,
-                              child: const Center(child: CircularProgressIndicator()),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            return Container(
-                              height: 180,
-                              color: Colors.grey.shade300,
-                              child: const Center(child: Icon(Icons.broken_image, size: 60, color: Colors.grey)),
-                            );
-                          },
-                        )
-                      : Container(
-                          height: 180,
-                          width: double.infinity,
-                          color: Colors.grey.shade100,
-                          child: const Center(
-                            child: Icon(Icons.image_not_supported, size: 60, color: Colors.grey),
-                          ),
-                        ),
+                  borderRadius: BorderRadius.circular(14),
+                  child:
+                      fruit?.image != null && fruit!.image.isNotEmpty
+                          ? Image.network(
+                            fruit.image,
+                            height: 100,
+                            width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.cover,
+                            errorBuilder:
+                                (context, error, stackTrace) =>
+                                    imagePlaceholder(context),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return SizedBox(
+                                height: 100,
+                                width: 140,
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              );
+                            },
+                          )
+                          : imagePlaceholder(context),
                 ),
-              ),
-              const SizedBox(height: 24),
-
-              // Quantity input
-              TextField(
-                controller: quantityController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Quantity",
-                  labelStyle: TextStyle(color: Colors.green.shade700),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.green.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.green.shade600, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                ),
-                onChanged: viewModel.setQuantity,
               ),
               const SizedBox(height: 18),
 
-              // Amount input
-              TextField(
-                controller: amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "Amount",
-                  labelStyle: TextStyle(color: Colors.green.shade700),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.green.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                    borderSide: BorderSide(color: Colors.green.shade600, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                ),
-                onChanged: viewModel.setAmount,
+              // Quantity input
+              buildTextField(
+                controller: quantityController,
+                label: "Quantity",
+                onChanged: viewModel.setQuantity,
+                context: context,
               ),
-              const SizedBox(height: 28),
+              const SizedBox(height: 12),
 
-              // Buttons row
+              // Amount input
+              buildTextField(
+                controller: amountController,
+                label: "Amount",
+                onChanged: viewModel.setAmount,
+                context: context,
+              ),
+              const SizedBox(height: 20),
+
+              // Button Row
               Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade700,
+                        backgroundColor: Colors.green.shade600,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
+                        
                         viewModel.saveFruit(
                           fruit?.name ?? "New Fruit",
                           fruit?.image ?? "",
@@ -157,25 +118,33 @@ class FruitFormWidget extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        fruit == null ? "Add Fruit" : "Update Fruit",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        fruit == null ? "Add" : "Add toCart",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
                   if (fruit != null) ...[
-                    const SizedBox(width: 14),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.red.shade700,
-                          side: BorderSide(color: Colors.red.shade700, width: 2),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: BorderSide(color: Colors.red.shade700),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                         ),
                         onPressed: () => viewModel.deleteFruit(fruit),
                         child: const Text(
                           "Delete",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                     ),
@@ -185,6 +154,49 @@ class FruitFormWidget extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required void Function(String) onChanged,
+    required BuildContext context,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      onChanged: onChanged,
+      style: const TextStyle(fontSize: 14),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.green.shade700, fontSize: 14),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.green.shade300),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.green.shade600, width: 1.8),
+        ),
+        filled: true,
+        fillColor: Colors.green.shade50.withOpacity(0.2),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 14,
+          vertical: 10,
+        ),
+      ),
+    );
+  }
+
+  Widget imagePlaceholder(BuildContext context) {
+    return Container(
+      height: 100,
+      width: MediaQuery.of(context).size.width,
+      color: Colors.grey.shade200,
+      child: const Center(
+        child: Icon(Icons.image_not_supported, size: 40, color: Colors.grey),
       ),
     );
   }

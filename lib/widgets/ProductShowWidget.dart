@@ -22,11 +22,11 @@ class ProductShowWidget extends StatelessWidget {
     return GridView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isWideScreen ? 4 : 3,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
+        crossAxisCount: isWideScreen ? 8 : 3,
+        crossAxisSpacing: 4, // Reduced from 8
+mainAxisSpacing: 4,  // Reduced from 8
         childAspectRatio: 0.8,
       ),
       itemCount: filteredFruits.length,
@@ -36,97 +36,67 @@ class ProductShowWidget extends StatelessWidget {
         return GestureDetector(
           onTap: () => viewModel.selectFruit(fruit),
           onDoubleTap: () {
-            Provider.of<CartViewModel>(context, listen: false)
-                .addItem(fruit.name, fruit.image);
+            Provider.of<CartViewModel>(
+              context,
+              listen: false,
+            ).addItem(fruit.name, fruit.image);
           },
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
             decoration: BoxDecoration(
+              color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: const [
+              boxShadow: [
                 BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                  offset: Offset(2, 4),
+                  color: Colors.grey.shade300,
+                  blurRadius: 6,
+                  offset: const Offset(2, 2),
                 ),
               ],
+              border: Border.all(
+                color: Colors.grey.shade200,
+                width: 1,
+              ),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                splashColor: Colors.greenAccent.withOpacity(0.3),
-                highlightColor: Colors.green.withOpacity(0.1),
-                child: Ink(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: Colors.green.shade300,
-                      width: 1,
+                splashColor: Colors.green.withOpacity(0.1),
+                highlightColor: Colors.green.withOpacity(0.05),
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                        child: Image.network(
+                          fruit.image,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          errorBuilder: (context, error, stackTrace) =>
+                              const Center(child: Icon(Icons.broken_image, color: Colors.red)),
+                        ),
+                      ),
                     ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.network(
-                            fruit.image,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: ClipRRect(
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(16),
-                            bottomRight: Radius.circular(16),
-                          ),
-                          child: BackdropFilter(
-                            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.black.withOpacity(0.4),
-                                    Colors.transparent,
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                ),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 10,
-                                horizontal: 8,
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                fruit.name,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold,
-                                  shadows: [
-                                    Shadow(
-                                      color: Colors.black,
-                                      blurRadius: 4,
-                                      offset: Offset(1, 1),
-                                    ),
-                                  ],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                          ),
+                      child: Text(
+                        fruit.name,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                          color: Colors.green,
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

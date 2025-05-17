@@ -99,6 +99,31 @@ class Fruit {
           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
       icon: "apple",
     ),
+     Fruit(
+      name: "Orange",
+      image:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_-85pfqnJjhytzCSQUWp9g0u6imExza0wJQ&s",
+      icon: "orange",
+    ),
+     Fruit(
+      name: "Orange",
+      image:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_-85pfqnJjhytzCSQUWp9g0u6imExza0wJQ&s",
+      icon: "orange",
+    ),
+     Fruit(
+      name: "Orange",
+      image:
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_-85pfqnJjhytzCSQUWp9g0u6imExza0wJQ&s",
+      icon: "orange",
+    ),
+    // https://t4.ftcdn.net/jpg/00/65/70/65/360_F_65706597_uNm2SwlPIuNUDuMwo6stBd81e25Y8K8s.jpg
+     Fruit(
+      name: "Orange",
+      image:
+          "https://t4.ftcdn.net/jpg/00/65/70/65/360_F_65706597_uNm2SwlPIuNUDuMwo6stBd81e25Y8K8s.jpg",
+      icon: "orange",
+    ),
   ];
 }
 

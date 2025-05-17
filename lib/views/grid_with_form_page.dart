@@ -5,6 +5,7 @@ import 'package:addisfruit/Model/fruit_model.dart';
 import 'package:addisfruit/viewmodels/CartViewModel.dart';
 import 'package:addisfruit/views/CartPage.dart';
 import 'package:addisfruit/views/order_history_page.dart';
+import 'package:addisfruit/widgets/HeaderAnimationWidget.dart';
 import 'package:addisfruit/widgets/ProductShowWidget.dart';
 import 'package:addisfruit/widgets/widgetAppBar.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +41,8 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
   ];
 
   int _currentIndex = 0;
+    bool _isUserRegistered = false;  // Track user registration status
+
   late PageController _pageController;
 
   bool showTopContent = true;
@@ -47,6 +50,8 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
   @override
   void initState() {
     super.initState();
+
+     _checkUserRegistration();
     _pageController = PageController(initialPage: 0);
 
     filteredFruits = allFruits;
@@ -87,6 +92,24 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
     });
   }
 
+  // Simulated async check for user registration
+  Future<void> _checkUserRegistration() async {
+    // Example: You might fetch from SharedPreferences, secure storage, or a provider
+    // For demonstration, let's simulate a delay and a bool value
+
+    await Future.delayed(Duration(milliseconds: 500));
+
+    bool userRegistered = false; // Replace with your actual check logic
+
+    // Example: If you have user data in Provider or SharedPrefs
+    // final user = Provider.of<UserProvider>(context, listen: false).user;
+    // bool userRegistered = user != null;
+
+    setState(() {
+      _isUserRegistered = userRegistered;
+    });
+  }
+
   void _onSearchChanged() {
     final query = _searchController.text.toLowerCase();
     setState(() {
@@ -112,79 +135,108 @@ class _GridWithFormPageState extends State<GridWithFormPage> {
     bool isWideScreen = MediaQuery.of(context).size.width >= 800;
 
     return Scaffold(
-      appBar: CustomAppBar(showTopContent: showTopContent),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Column(
-          children: [
-            if (showTopContent) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: SizedBox(
-                  height: 100,
-                  child: PageView.builder(
-                    controller: _pageController,
-                    itemCount: sliderImages.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Stack(
-                            children: [
-                              Image.network(
-                                sliderImages[index],
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                              ),
-                              Container(
-                                alignment: Alignment.center,
-                                color: Colors.black.withOpacity(0.3),
-                                child: Text(
-                                  "🔥 ${toptext[index]} 🛒",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.center,
+      appBar: CustomAppBar(
+        searchController: _searchController,
+        searchFocusNode: _searchFocusNode,
+        isUserRegistered: _isUserRegistered,
+      ),
+      body:
+          isWideScreen
+              ? Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: SingleChildScrollView(
+                      controller: _scrollController,
+                      child: Column(
+                        children: [
+                          if (showTopContent) ...[
+                            HeaderAnimationWidget(
+                              sliderImages: sliderImages,
+                              topText: toptext,
+                            ),
+                          ],
+                          ProductShowWidget(
+                            filteredFruits: filteredFruits,
+                            isWideScreen: isWideScreen,
+                            viewModel: viewModel,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  if (viewModel.showForm)
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        color: Colors.grey.shade50,
+                        child: FruitFormWidget(),
+                      ),
+                    ),
+                ],
+              )
+              : SingleChildScrollView(
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    if (showTopContent) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: SizedBox(
+                          height: 100,
+                          child: PageView.builder(
+                            controller: _pageController,
+                            itemCount: sliderImages.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12.0,
                                 ),
-                              ),
-                            ],
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Stack(
+                                    children: [
+                                      Image.network(
+                                        sliderImages[index],
+                                        fit: BoxFit.cover,
+                                        width: double.infinity,
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        color: Colors.black.withOpacity(0.3),
+                                        child: Text(
+                                          "🔥 ${toptext[index]} 🛒",
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    ],
+
+                    ProductShowWidget(
+                      filteredFruits: filteredFruits,
+                      isWideScreen: isWideScreen,
+                      viewModel: viewModel,
+                    ),
+
+                    if (viewModel.showForm)
+                      SizedBox(height: 400, child: FruitFormWidget()),
+                  ],
                 ),
               ),
-            ],
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: TextField(
-                controller: _searchController,
-                focusNode: _searchFocusNode,
-                decoration: InputDecoration(
-                  hintText: "Search fruits...",
-                  prefixIcon: Icon(Icons.search),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
-            ProductShowWidget(
-            filteredFruits: filteredFruits,
-            isWideScreen: isWideScreen,
-            viewModel: viewModel,
-          ),
-           if (isWideScreen && viewModel.showForm) FruitFormWidget(),
-          ],
-        ),
-      ),
       bottomSheet:
           !isWideScreen && viewModel.showForm
               ? SizedBox(height: 400, child: FruitFormWidget())

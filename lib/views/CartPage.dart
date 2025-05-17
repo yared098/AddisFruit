@@ -14,7 +14,7 @@ class CartPage extends StatelessWidget {
         return Center(
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 30),
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -25,15 +25,21 @@ class CartPage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Icons.check_circle, size: 60, color: Colors.green),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   Text(
                     title,
                     style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.bold),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center),
-                  const SizedBox(height: 20),
+                  Text(
+                    message,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: ElevatedButton.styleFrom(
@@ -42,7 +48,10 @@ class CartPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text("OK"),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      child: Text("OK", style: TextStyle(fontSize: 16)),
+                    ),
                   ),
                 ],
               ),
@@ -69,10 +78,12 @@ class CartPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your Cart"),
+        backgroundColor: Colors.green.shade700,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text("🛒 Your Cart", style: TextStyle(color: Colors.white)),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_forever),
+            icon: const Icon(Icons.delete_forever, color: Colors.white),
             tooltip: "Clear Cart",
             onPressed: () {
               Navigator.pop(context);
@@ -82,7 +93,6 @@ class CartPage extends StatelessWidget {
                 "Cart Cleared",
                 "Your cart has been successfully cleared!",
               );
-              
             },
           ),
         ],
@@ -90,37 +100,36 @@ class CartPage extends StatelessWidget {
       body: cart.items.isEmpty
           ? const Center(
               child: Text(
-                "🛒 Your cart is empty",
-                style: TextStyle(fontSize: 18),
+                "🛍️ Your cart is empty",
+                style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
             )
           : ListView.builder(
+              padding: const EdgeInsets.all(16),
               itemCount: cart.items.length,
-              padding: const EdgeInsets.all(12),
               itemBuilder: (context, index) {
                 final item = cart.items[index];
                 return Card(
-                  elevation: 4,
+                  elevation: 3,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
                   child: ListTile(
                     contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                     leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(12),
                       child: Image.network(
                         item.image,
-                        width: 50,
-                        height: 50,
+                        width: 55,
+                        height: 55,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return CircleAvatar(
-                            radius: 25,
+                            radius: 26,
                             backgroundColor: Colors.grey.shade200,
-                            child: const Icon(Icons.broken_image,
-                                color: Colors.grey, size: 28),
+                            child: const Icon(Icons.broken_image, size: 28, color: Colors.grey),
                           );
                         },
                       ),
@@ -132,16 +141,16 @@ class CartPage extends StatelessWidget {
                         fontSize: 16,
                       ),
                     ),
-                    subtitle: Text("Quantity: ${item.quantity}"),
+                    subtitle: Text("Qty: ${item.quantity}"),
                     trailing: Wrap(
                       spacing: 4,
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.remove_circle_outline),
+                          icon: const Icon(Icons.remove_circle_outline, color: Colors.grey),
                           onPressed: () => cart.decreaseQuantity(item.name),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.add_circle_outline),
+                          icon: const Icon(Icons.add_circle_outline, color: Colors.grey),
                           onPressed: () => cart.increaseQuantity(item.name),
                         ),
                         IconButton(
@@ -157,15 +166,7 @@ class CartPage extends StatelessWidget {
       bottomNavigationBar: cart.items.isNotEmpty
           ? Padding(
               padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.green,
-                  side: const BorderSide(color: Colors.green),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+              child: ElevatedButton.icon(
                 icon: const Icon(Icons.check_circle_outline),
                 label: const Text(
                   "Process Order",
@@ -178,9 +179,15 @@ class CartPage extends StatelessWidget {
                     "Order Placed",
                     "Your order has been successfully processed!",
                   );
-                  cart.clearCart(); // Optional: clear cart after processing
-                  
+                  cart.clearCart();
                 },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             )
           : null,
