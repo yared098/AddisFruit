@@ -1,17 +1,30 @@
 # addisfruit
 
-A new Flutter project.
+🍉 Addis Fruit – Mobile Market App
+Addis Fruit is a modern and responsive Flutter-based mobile application designed to showcase and sell fresh fruits in a beautiful, user-friendly interface. It simulates a smooth and efficient marketplace experience for both customers and vendors.
 
-## Getting Started
+🌟 Features
+🛒 Add to Cart with Double-Tap: Quickly add items to the cart using a double-tap gesture.
 
-This project is a starting point for a Flutter application.
+🧺 Cart Management: View, update, and remove items from the cart.
 
-A few resources to get you started if this is your first Flutter project:
+🔍 Filtered Product View: Search and display fruits dynamically based on filters.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+📦 Order History: View past orders easily.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-# AddisFruit
+💡 Responsive UI: Adapts grid layout based on screen size (3 or 4 columns).
+
+🔄 Animated Interactions: Smooth UI transitions and feedback.
+
+🎨 Modern Design: Clean product cards with image overlays, blur effects, and shadows.
+
+🛠 Tech Stack
+Flutter – Cross-platform UI toolkit
+
+Provider – State management
+
+Material Design – UI components
+
+Dart – Core programming language
+
+
