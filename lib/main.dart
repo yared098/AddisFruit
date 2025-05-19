@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:addisfruit/Model/fruit_model.dart';
 import 'package:addisfruit/viewmodels/CartViewModel.dart';
+import 'package:addisfruit/viewmodels/CustomCart.dart';
 import 'package:addisfruit/viewmodels/order_view_model.dart';
 import 'package:addisfruit/viewmodels/theme_provider.dart';
 import 'package:addisfruit/views/HomePage.dart';
@@ -29,6 +30,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => CartViewModel()),
         ChangeNotifierProvider(create: (_) => OrderViewModel()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_)=>CustomCartProvider()),
       ],
       child: MyApp(
         hasSeenSplash: hasSeenSplash,

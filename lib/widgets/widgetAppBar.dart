@@ -50,7 +50,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               Expanded(
                 child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  margin: const EdgeInsets.symmetric(vertical: 15),
                   child: Material(
                     elevation: 1,
                     borderRadius: BorderRadius.circular(10),

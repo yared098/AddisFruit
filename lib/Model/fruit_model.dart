@@ -14,7 +14,7 @@ class Fruit {
     Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ),
     Fruit(
@@ -61,42 +61,42 @@ class Fruit {
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ), Fruit(
       name: "Apple",
       image:
-          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQazpJCRL9hs8lklHmRkkxt5mh78zJQmwUN5A&s",
+          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSR-gAkE4u0U4Ndf3x0PlZyaKTjPbE2xUC5EA&s",
       icon: "apple",
     ),
      Fruit(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';  // Add this package
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class HeaderAnimationWidget extends StatefulWidget {
   final List<String> sliderImages;
@@ -22,17 +22,11 @@ class _HeaderAnimationWidgetState extends State<HeaderAnimationWidget> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(
-      viewportFraction: 0.85,
-      initialPage: 0,
-    );
-
+    _pageController = PageController(viewportFraction: 0.85);
     _pageController.addListener(() {
       int next = _pageController.page!.round();
       if (_currentPage != next) {
-        setState(() {
-          _currentPage = next;
-        });
+        setState(() => _currentPage = next);
       }
     });
   }
@@ -45,7 +39,8 @@ class _HeaderAnimationWidgetState extends State<HeaderAnimationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height * 0.18;
+    final double height = MediaQuery.of(context).size.height * 0.25;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       children: [
@@ -56,17 +51,22 @@ class _HeaderAnimationWidgetState extends State<HeaderAnimationWidget> {
             itemCount: widget.sliderImages.length,
             itemBuilder: (context, index) {
               bool active = index == _currentPage;
-              return _buildPageItem(widget.sliderImages[index], widget.topText[index], active);
+              return _buildPageItem(
+                context,
+                widget.sliderImages[index],
+                widget.topText[index],
+                active,
+              );
             },
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         SmoothPageIndicator(
           controller: _pageController,
           count: widget.sliderImages.length,
           effect: ExpandingDotsEffect(
-            activeDotColor: Colors.green,
-            dotColor: Colors.grey.shade400,
+            activeDotColor: isDark ? Colors.tealAccent : Colors.green,
+            dotColor: isDark ? Colors.white30 : Colors.grey.shade400,
             dotHeight: 8,
             dotWidth: 8,
             spacing: 6,
@@ -76,8 +76,9 @@ class _HeaderAnimationWidgetState extends State<HeaderAnimationWidget> {
     );
   }
 
-  Widget _buildPageItem(String imageUrl, String text, bool active) {
-    final double blur = active ? 15 : 5;
+  Widget _buildPageItem(BuildContext context, String imageUrl, String text, bool active) {
+    final theme = Theme.of(context);
+    final double blur = active ? 16 : 5;
     final double offset = active ? 10 : 5;
     final double top = active ? 0 : 20;
 
@@ -86,33 +87,37 @@ class _HeaderAnimationWidgetState extends State<HeaderAnimationWidget> {
       curve: Curves.easeOutQuint,
       margin: EdgeInsets.only(top: top, bottom: 10, right: 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black26,
+            color: theme.shadowColor.withOpacity(0.2),
             blurRadius: blur,
             offset: Offset(0, offset),
           ),
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: Stack(
           fit: StackFit.expand,
           children: [
             Image.network(
               imageUrl,
               fit: BoxFit.cover,
-              loadingBuilder: (context, child, progress) {
-                if (progress == null) return child;
-                return Center(child: CircularProgressIndicator());
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return Center(child: CircularProgressIndicator(color: theme.primaryColor));
               },
-              errorBuilder: (context, error, stackTrace) => Center(child: Icon(Icons.error)),
+              errorBuilder: (context, error, stackTrace) =>
+                  const Center(child: Icon(Icons.broken_image, size: 40, color: Colors.redAccent)),
             ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+                  colors: [
+                    Colors.black.withOpacity(0.6),
+                    Colors.transparent,
+                  ],
                   begin: Alignment.bottomCenter,
                   end: Alignment.center,
                 ),
@@ -121,14 +126,14 @@ class _HeaderAnimationWidgetState extends State<HeaderAnimationWidget> {
             Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 child: Text(
                   "🔥 $text 🛒",
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                    shadows: const [
                       Shadow(
                         offset: Offset(0, 1),
                         blurRadius: 4,

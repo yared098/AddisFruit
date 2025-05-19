@@ -5,6 +5,9 @@
 
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>We need your location to provide better service</string>
+	<key>MGLMapboxAccessToken</key>
+	<string>pk.eyJ1IjoicGhpbGljYSIsImEiOiJjbGMwZGQ2encxOTNuM3hvNTdiYTFpcmkzIn0.zKZYpAyB_Bps-PfHOCUyFQ</string>
+
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
